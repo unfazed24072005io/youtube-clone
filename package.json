@@ -3,17 +3,37 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@capacitor/android": "^8.1.0",
+    "@capacitor/cli": "^8.1.0",
+    "@capacitor/core": "^8.1.0",
+    "@capacitor/ios": "^8.1.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@ionic/react": "^8.7.17",
+    "@ionic/react-router": "^8.7.17",
+    "@mui/icons-material": "^7.3.8",
+    "@mui/material": "^7.3.8",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.126",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
+    "axios": "^1.13.5",
+    "cors": "^2.8.6",
+    "date-fns": "^4.1.0",
+    "express": "^5.2.1",
+    "framer-motion": "^12.34.2",
+    "ionicons": "^8.0.13",
+    "multer": "^2.0.2",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "react-dropzone": "^15.0.0",
+    "react-icons": "^5.5.0",
+    "react-player": "^3.4.0",
+    "react-router-dom": "^5.3.4",
     "react-scripts": "5.0.1",
+    "react-share": "^5.2.2",
+    "react-toastify": "^11.0.5",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
@@ -40,5 +60,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@types/react-router-dom": "^5.3.3",
+    "nodemon": "^3.1.11"
   }
 }
