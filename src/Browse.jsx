@@ -273,7 +273,7 @@ const Browse = ({ searchQuery }) => {
                     component="img"
                     image={
                       video.thumbnail 
-                        ? video.thumbnail.replace('http://localhost:5000', 'https://xenzys-api.sutirthasoor7.workers.dev')
+                        ? video.thumbnail.replace('http://localhost:5000', 'https://b2-proxy.sutirthasoor7.workers.dev')
                         : `https://via.placeholder.com/320x180/ff0000/ffffff?text=${video.title?.substring(0,10) || 'Video'}`
                     }
                     alt={video.title}
@@ -443,7 +443,7 @@ const Browse = ({ searchQuery }) => {
             {/* Video Player */}
             <Box sx={{ position: 'relative', pt: '56.25%', bgcolor: '#000', borderRadius: 2, overflow: 'hidden' }}>
               <video
-                src={`https://xenzys-api.sutirthasoor7.workers.dev/uploads/${currentVideo.filename}`}
+                src={`https://b2-proxy.sutirthasoor7.workers.dev/${currentVideo.filename}`}
                 controls
                 autoPlay
                 style={{

@@ -174,7 +174,7 @@ const Shorts = () => {
         >
           <video
             ref={(el) => { videoRefs.current[index] = el; }}
-            src={`https://xenzys-api.sutirthasoor7.workers.dev/uploads/${short.filename}`}
+            src={`https://b2-proxy.sutirthasoor7.workers.dev/${short.filename}`}
             style={{
               width: '100%',
               height: '100%',
