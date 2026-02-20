@@ -2,7 +2,7 @@ import { S3Client, GetObjectCommand, ListObjectsV2Command } from '@aws-sdk/clien
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 // Environment variables (will be set in wrangler.toml or as secrets)
-const B2_ACCOUNT_ID = '00551b461b72c8e000000002';
+const B2_ACCOUNT_ID = '005fe4bae51e8cd0000000001';
 const B2_APPLICATION_KEY = ''; // Will be set as secret
 const B2_ENDPOINT = 's3.us-east-005.backblazeb2.com';
 const BUCKET_NAME = 'xenzys';
