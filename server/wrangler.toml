@@ -1,0 +1,14 @@
+name = "xenzys-api"
+main = "index.js"
+compatibility_date = "2025-11-25"
+compatibility_flags = ["nodejs_compat"]
+
+# R2 Bucket for permanent video storage
+[[r2_buckets]]
+binding = "VIDEOS"
+bucket_name = "xenzys-videos"
+
+# Environment variables
+[vars]
+NODE_ENV = "production"
+ALLOWED_ORIGINS = "https://4e584c5a.xenzys.pages.dev"

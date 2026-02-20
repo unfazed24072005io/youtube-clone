@@ -1,0 +1,16 @@
+name = "xenzys-api"
+main = "src/index.js"
+compatibility_date = "2026-02-19"
+
+# D1 Database configuration
+[[d1_databases]]
+binding = "xenzys_db"
+database_name = "xenzys-db"
+database_id = "4c894010-811e-4c4b-9584-103de144fba0"
+
+# Environment variables
+[vars]
+B2_ACCOUNT_ID = "00551b461b72c8e000000002"
+B2_ENDPOINT = "s3.us-east-005.backblazeb2.com"
+BUCKET_NAME = "xenzys"
+PROXY_URL = "https://b2-proxy.sutirthasoor7.workers.dev"

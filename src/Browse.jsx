@@ -60,7 +60,7 @@ const Browse = ({ searchQuery }) => {
   const fetchVideos = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('https://youtube-clone-ofee.onrender.com/api/videos?type=video');
+      const response = await axios.get('https://xenzys-api.sutirthasoor7.workers.dev/api/videos?type=video');
       let filtered = response.data;
       
       if (searchQuery) {
@@ -95,7 +95,7 @@ const Browse = ({ searchQuery }) => {
     setPlayerOpen(true);
     setComments(video.comments || []);
     
-    axios.post(`https://youtube-clone-ofee.onrender.com/api/videos/${video.id}/view`);
+    axios.post(`https://xenzys-api.sutirthasoor7.workers.dev/api/videos/${video.id}/view`);
     
     setVideos(videos.map(v => 
       v.id === video.id ? {...v, views: (v.views || 0) + 1} : v
@@ -106,7 +106,7 @@ const Browse = ({ searchQuery }) => {
     if (!currentVideo || liked[currentVideo.id]) return;
     
     try {
-      const res = await axios.post(`https://youtube-clone-ofee.onrender.com/api/videos/${currentVideo.id}/like`);
+      const res = await axios.post(`https://xenzys-api.sutirthasoor7.workers.dev/api/videos/${currentVideo.id}/like`);
       setCurrentVideo({...currentVideo, likes: res.data.likes});
       setLiked({...liked, [currentVideo.id]: true});
       if (disliked[currentVideo.id]) setDisliked({...disliked, [currentVideo.id]: false});
@@ -123,7 +123,7 @@ const Browse = ({ searchQuery }) => {
     if (!currentVideo || disliked[currentVideo.id]) return;
     
     try {
-      const res = await axios.post(`https://youtube-clone-ofee.onrender.com/api/videos/${currentVideo.id}/dislike`);
+      const res = await axios.post(`https://xenzys-api.sutirthasoor7.workers.dev/api/videos/${currentVideo.id}/dislike`);
       setCurrentVideo({...currentVideo, dislikes: res.data.dislikes});
       setDisliked({...disliked, [currentVideo.id]: true});
       if (liked[currentVideo.id]) setLiked({...liked, [currentVideo.id]: false});
@@ -140,7 +140,7 @@ const Browse = ({ searchQuery }) => {
     if (!commentText.trim() || !currentVideo) return;
     
     try {
-      const res = await axios.post(`https://youtube-clone-ofee.onrender.com/api/videos/${currentVideo.id}/comment`, {
+      const res = await axios.post(`https://xenzys-api.sutirthasoor7.workers.dev/api/videos/${currentVideo.id}/comment`, {
         text: commentText,
         username: 'You'
       });
@@ -156,7 +156,7 @@ const Browse = ({ searchQuery }) => {
     e.stopPropagation();
     if (!liked[videoId]) {
       try {
-        const res = await axios.post(`https://youtube-clone-ofee.onrender.com/api/videos/${videoId}/like`);
+        const res = await axios.post(`https://xenzys-api.sutirthasoor7.workers.dev/api/videos/${videoId}/like`);
         setVideos(videos.map(v => 
           v.id === videoId ? {...v, likes: res.data.likes} : v
         ));
@@ -273,7 +273,7 @@ const Browse = ({ searchQuery }) => {
                     component="img"
                     image={
                       video.thumbnail 
-                        ? video.thumbnail.replace('http://localhost:5000', 'https://youtube-clone-ofee.onrender.com')
+                        ? video.thumbnail.replace('http://localhost:5000', 'https://xenzys-api.sutirthasoor7.workers.dev')
                         : `https://via.placeholder.com/320x180/ff0000/ffffff?text=${video.title?.substring(0,10) || 'Video'}`
                     }
                     alt={video.title}
@@ -443,7 +443,7 @@ const Browse = ({ searchQuery }) => {
             {/* Video Player */}
             <Box sx={{ position: 'relative', pt: '56.25%', bgcolor: '#000', borderRadius: 2, overflow: 'hidden' }}>
               <video
-                src={`https://youtube-clone-ofee.onrender.com/uploads/${currentVideo.filename}`}
+                src={`https://xenzys-api.sutirthasoor7.workers.dev/uploads/${currentVideo.filename}`}
                 controls
                 autoPlay
                 style={{
