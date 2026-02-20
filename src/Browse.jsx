@@ -12,7 +12,8 @@ import {
   Avatar,
   IconButton,
   Menu,
-  MenuItem
+  MenuItem,
+  TextField
 } from '@mui/material';
 import {
   Whatshot,
@@ -35,7 +36,6 @@ const categories = [
   { label: 'Music', icon: <MusicNote /> },
   { label: 'Gaming', icon: <SportsEsports /> },
   { label: 'Movies', icon: <Movie /> }
-  // Removed News category
 ];
 
 const Browse = ({ searchQuery }) => {
@@ -46,6 +46,10 @@ const Browse = ({ searchQuery }) => {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [liked, setLiked] = useState({});
   const [disliked, setDisliked] = useState({});
+  const [playerOpen, setPlayerOpen] = useState(false);
+  const [currentVideo, setCurrentVideo] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState('');
 
   useEffect(() => {
     fetchVideos();
@@ -54,7 +58,7 @@ const Browse = ({ searchQuery }) => {
   const fetchVideos = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:5000/api/videos?type=video');
+      const response = await axios.get('https://youtube-clone-ofee.onrender.com/api/videos?type=video');
       let filtered = response.data;
       
       if (searchQuery) {
@@ -85,15 +89,72 @@ const Browse = ({ searchQuery }) => {
   };
 
   const handleVideoClick = (video) => {
-    window.open(video.videoUrl, '_blank');
-    axios.post(`http://localhost:5000/api/videos/${video.id}/view`);
+    setCurrentVideo(video);
+    setPlayerOpen(true);
+    setComments(video.comments || []);
+    
+    axios.post(`https://youtube-clone-ofee.onrender.com/api/videos/${video.id}/view`);
+    
+    setVideos(videos.map(v => 
+      v.id === video.id ? {...v, views: (v.views || 0) + 1} : v
+    ));
+  };
+
+  const handleLikeVideo = async () => {
+    if (!currentVideo || liked[currentVideo.id]) return;
+    
+    try {
+      const res = await axios.post(`https://youtube-clone-ofee.onrender.com/api/videos/${currentVideo.id}/like`);
+      setCurrentVideo({...currentVideo, likes: res.data.likes});
+      setLiked({...liked, [currentVideo.id]: true});
+      if (disliked[currentVideo.id]) setDisliked({...disliked, [currentVideo.id]: false});
+      
+      setVideos(videos.map(v => 
+        v.id === currentVideo.id ? {...v, likes: res.data.likes} : v
+      ));
+    } catch (error) {
+      console.error('Error liking video:', error);
+    }
+  };
+
+  const handleDislikeVideo = async () => {
+    if (!currentVideo || disliked[currentVideo.id]) return;
+    
+    try {
+      const res = await axios.post(`https://youtube-clone-ofee.onrender.com/api/videos/${currentVideo.id}/dislike`);
+      setCurrentVideo({...currentVideo, dislikes: res.data.dislikes});
+      setDisliked({...disliked, [currentVideo.id]: true});
+      if (liked[currentVideo.id]) setLiked({...liked, [currentVideo.id]: false});
+      
+      setVideos(videos.map(v => 
+        v.id === currentVideo.id ? {...v, dislikes: res.data.dislikes} : v
+      ));
+    } catch (error) {
+      console.error('Error disliking video:', error);
+    }
+  };
+
+  const handleAddComment = async () => {
+    if (!commentText.trim() || !currentVideo) return;
+    
+    try {
+      const res = await axios.post(`https://youtube-clone-ofee.onrender.com/api/videos/${currentVideo.id}/comment`, {
+        text: commentText,
+        username: 'You'
+      });
+      
+      setComments(res.data.comments);
+      setCommentText('');
+    } catch (error) {
+      console.error('Error adding comment:', error);
+    }
   };
 
   const handleLike = async (e, videoId) => {
     e.stopPropagation();
     if (!liked[videoId]) {
       try {
-        const res = await axios.post(`http://localhost:5000/api/videos/${videoId}/like`);
+        const res = await axios.post(`https://youtube-clone-ofee.onrender.com/api/videos/${videoId}/like`);
         setVideos(videos.map(v => 
           v.id === videoId ? {...v, likes: res.data.likes} : v
         ));
@@ -208,7 +269,11 @@ const Browse = ({ searchQuery }) => {
                 <Box sx={{ position: 'relative' }}>
                   <CardMedia
                     component="img"
-                    image={video.thumbnail || 'https://via.placeholder.com/320x180/ff0000/ffffff?text=Video'}
+                    image={
+                      video.thumbnail 
+                        ? video.thumbnail.replace('http://localhost:5000', 'https://youtube-clone-ofee.onrender.com')
+                        : `https://via.placeholder.com/320x180/ff0000/ffffff?text=${video.title?.substring(0,10) || 'Video'}`
+                    }
                     alt={video.title}
                     sx={{
                       height: 180,
@@ -349,6 +414,162 @@ const Browse = ({ searchQuery }) => {
           <ThumbDown fontSize="small" /> Don't recommend channel
         </MenuItem>
       </Menu>
+
+      {/* Video Player Modal */}
+      {playerOpen && currentVideo && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            bgcolor: 'rgba(0,0,0,0.95)',
+            zIndex: 2000,
+            overflowY: 'auto'
+          }}
+        >
+          <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
+            {/* Close button */}
+            <IconButton
+              onClick={() => setPlayerOpen(false)}
+              sx={{ position: 'fixed', top: 20, right: 20, color: 'white', bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#ff0000' } }}
+            >
+              ✕
+            </IconButton>
+
+            {/* Video Player */}
+            <Box sx={{ position: 'relative', pt: '56.25%', bgcolor: '#000', borderRadius: 2, overflow: 'hidden' }}>
+              <video
+                src={`https://youtube-clone-ofee.onrender.com/uploads/${currentVideo.filename}`}
+                controls
+                autoPlay
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain'
+                }}
+              />
+            </Box>
+
+            {/* Video Info */}
+            <Box sx={{ mt: 3, color: 'white' }}>
+              <Typography variant="h5" sx={{ mb: 2 }}>{currentVideo.title}</Typography>
+              
+              {/* Stats and Actions */}
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, pb: 2, borderBottom: '1px solid #333' }}>
+                <Typography variant="body2" sx={{ color: '#aaa' }}>
+                  {formatViews(currentVideo.views)} views • {formatTime(currentVideo.uploadedAt)}
+                </Typography>
+                
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <Button
+                    startIcon={<ThumbUp />}
+                    onClick={handleLikeVideo}
+                    sx={{
+                      color: liked[currentVideo.id] ? '#ff0000' : '#aaa',
+                      '&:hover': { color: '#ff0000' }
+                    }}
+                  >
+                    {formatViews(currentVideo.likes)}
+                  </Button>
+                  <Button
+                    startIcon={<ThumbDown />}
+                    onClick={handleDislikeVideo}
+                    sx={{
+                      color: disliked[currentVideo.id] ? '#ff0000' : '#aaa',
+                      '&:hover': { color: '#ff0000' }
+                    }}
+                  >
+                    {formatViews(currentVideo.dislikes)}
+                  </Button>
+                  <Button startIcon={<Share />} sx={{ color: '#aaa' }}>
+                    Share
+                  </Button>
+                </Box>
+              </Box>
+
+              {/* Channel Info */}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                <Avatar sx={{ bgcolor: '#ff0000', width: 48, height: 48 }}>
+                  {currentVideo.channel?.charAt(0) || 'Y'}
+                </Avatar>
+                <Box>
+                  <Typography variant="subtitle1">{currentVideo.channel || 'Your Channel'}</Typography>
+                  <Typography variant="body2" sx={{ color: '#aaa' }}>1.2K subscribers</Typography>
+                </Box>
+                <Button
+                  variant="contained"
+                  sx={{
+                    ml: 'auto',
+                    bgcolor: '#cc0000',
+                    '&:hover': { bgcolor: '#ff0000' }
+                  }}
+                >
+                  Subscribe
+                </Button>
+              </Box>
+
+              {/* Description */}
+              <Typography variant="body1" sx={{ mb: 3, color: '#ddd', whiteSpace: 'pre-wrap' }}>
+                {currentVideo.description || 'No description'}
+              </Typography>
+
+              {/* Comments Section */}
+              <Box>
+                <Typography variant="h6" sx={{ mb: 2 }}>Comments ({comments.length})</Typography>
+                
+                {/* Add Comment */}
+                <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+                  <Avatar sx={{ bgcolor: '#333' }}>Y</Avatar>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    placeholder="Add a comment..."
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        color: 'white',
+                        '& fieldset': { borderColor: '#333' },
+                        '&:hover fieldset': { borderColor: '#ff0000' }
+                      }
+                    }}
+                  />
+                  <Button
+                    variant="contained"
+                    onClick={handleAddComment}
+                    sx={{ bgcolor: '#ff0000', '&:hover': { bgcolor: '#cc0000' } }}
+                  >
+                    Comment
+                  </Button>
+                </Box>
+
+                {/* Comments List */}
+                {comments.map((comment, index) => (
+                  <Box key={index} sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                    <Avatar sx={{ bgcolor: '#333', width: 32, height: 32 }}>
+                      {comment.username?.charAt(0) || 'U'}
+                    </Avatar>
+                    <Box>
+                      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                        <Typography variant="subtitle2">{comment.username}</Typography>
+                        <Typography variant="caption" sx={{ color: '#aaa' }}>
+                          {new Date(comment.timestamp).toLocaleDateString()}
+                        </Typography>
+                      </Box>
+                      <Typography variant="body2" sx={{ color: '#ddd' }}>{comment.text}</Typography>
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 };

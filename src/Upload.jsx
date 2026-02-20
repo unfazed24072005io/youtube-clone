@@ -122,7 +122,7 @@ const Upload = () => {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/upload', formData, {
+      await axios.post('https://youtube-clone-ofee.onrender.com/api/upload', formData, {
         onUploadProgress: (progressEvent) => {
           if (progressEvent.total) {
             const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);

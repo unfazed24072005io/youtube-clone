@@ -19,6 +19,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
     "axios": "^1.13.5",
+    "cordova-plugin-background-upload": "^1.1.0",
     "cors": "^2.8.6",
     "date-fns": "^4.1.0",
     "express": "^5.2.1",

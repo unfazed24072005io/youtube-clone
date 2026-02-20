@@ -40,7 +40,7 @@ const Shorts = () => {
         if (index === currentIndex) {
           video.play().catch(() => {});
           if (shorts[index]) {
-            axios.post(`http://localhost:5000/api/videos/${shorts[index].id}/view`);
+            axios.post(`https://youtube-clone-ofee.onrender.com/api/videos/${shorts[index].id}/view`);
           }
         } else {
           video.pause();
@@ -51,7 +51,7 @@ const Shorts = () => {
 
   const fetchShorts = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/videos?type=short');
+      const response = await axios.get('https://youtube-clone-ofee.onrender.com/api/videos?type=short');
       setShorts(response.data);
       
       const comments = {};
@@ -82,7 +82,7 @@ const Shorts = () => {
   const handleLike = async (shortId) => {
     if (!liked[shortId]) {
       try {
-        const res = await axios.post(`http://localhost:5000/api/videos/${shortId}/like`);
+        const res = await axios.post(`https://youtube-clone-ofee.onrender.com/api/videos/${shortId}/like`);
         setShorts(shorts.map(s => 
           s.id === shortId ? {...s, likes: res.data.likes} : s
         ));
@@ -97,7 +97,7 @@ const Shorts = () => {
   const handleComment = async (shortId) => {
     if (commentText.trim()) {
       try {
-        const res = await axios.post(`http://localhost:5000/api/videos/${shortId}/comment`, {
+        const res = await axios.post(`https://youtube-clone-ofee.onrender.com/api/videos/${shortId}/comment`, {
           text: commentText,
           username: 'You'
         });
@@ -174,7 +174,7 @@ const Shorts = () => {
         >
           <video
             ref={(el) => { videoRefs.current[index] = el; }}
-            src={short.videoUrl}
+            src={`https://youtube-clone-ofee.onrender.com/uploads/${short.filename}`}
             style={{
               width: '100%',
               height: '100%',

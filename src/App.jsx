@@ -87,7 +87,7 @@ function App() {
   const drawer = (
     <Box sx={{ bgcolor: '#0f0f0f', height: '100%', color: 'white' }}>
       <Toolbar>
-        <Typography variant="h6" sx={{ color: '#ff0000', fontWeight: 'bold' }}>YouTube</Typography>
+        <Typography variant="h6" sx={{ color: '#ff0000', fontWeight: 'bold' }}>XENZYS</Typography>
       </Toolbar>
       <Divider sx={{ bgcolor: '#303030' }} />
       <List>
@@ -150,7 +150,7 @@ function App() {
               }}
               onClick={() => history.push('/')}
             >
-              YouTube
+              XENZYS
             </Typography>
 
             <form onSubmit={handleSearch} style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
