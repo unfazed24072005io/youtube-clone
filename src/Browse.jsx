@@ -43,6 +43,7 @@ const Browse = ({ searchQuery }) => {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [anchorEl, setAnchorEl] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [liked, setLiked] = useState({});
   const [disliked, setDisliked] = useState({});
@@ -53,6 +54,7 @@ const Browse = ({ searchQuery }) => {
 
   useEffect(() => {
     fetchVideos();
+// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory, searchQuery]);
 
   const fetchVideos = async () => {

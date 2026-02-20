@@ -17,11 +17,8 @@ import {
 import {
   CloudUpload,
   Videocam,
-  Description,
   CheckCircle,
-  Cancel,
-  Add,
-  Tag
+  Add
 } from '@mui/icons-material';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
