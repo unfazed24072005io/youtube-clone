@@ -7,7 +7,6 @@ import {
   Chip,
   Button,
   Card,
-  CardMedia,
   CardContent,
   Avatar,
   IconButton,
