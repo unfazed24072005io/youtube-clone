@@ -30,18 +30,9 @@ import {
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const categories = [
-  { label: 'All', icon: null },
-  { label: 'Trending', icon: <Whatshot /> },
-  { label: 'Music', icon: <MusicNote /> },
-  { label: 'Gaming', icon: <SportsEsports /> },
-  { label: 'Movies', icon: <Movie /> }
-];
-
 const Browse = ({ searchQuery }) => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('All');
   const [anchorEl, setAnchorEl] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -54,8 +45,7 @@ const Browse = ({ searchQuery }) => {
 
   useEffect(() => {
     fetchVideos();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCategory, searchQuery]);
+  }, [searchQuery]);
 
   const fetchVideos = async () => {
     try {
@@ -191,55 +181,26 @@ const Browse = ({ searchQuery }) => {
   return (
     <Box sx={{ 
       width: '100%',
-      maxWidth: '100vw',
+      maxWidth: '100%',
       overflowX: 'hidden',
-      px: { xs: 1, sm: 2, md: 3 }
+      px: { xs: 1, sm: 2, md: 3 },
+      boxSizing: 'border-box'
     }}>
-      {/* Categories - Scrollable but full width */}
-      <Box sx={{ 
-        width: '100%',
-        overflowX: 'auto',
-        pb: 1,
-        mb: 2,
-        '&::-webkit-scrollbar': { height: 3 },
-        '&::-webkit-scrollbar-thumb': { bgcolor: '#ff0000', borderRadius: 2 }
-      }}>
-        <Box sx={{ display: 'flex', gap: 1, width: 'max-content' }}>
-          {categories.map((cat) => (
-            <Chip
-              key={cat.label}
-              label={cat.label}
-              icon={cat.icon}
-              onClick={() => setSelectedCategory(cat.label)}
-              sx={{
-                bgcolor: selectedCategory === cat.label ? '#ff0000' : '#1a1a1a',
-                color: 'white',
-                '&:hover': {
-                  bgcolor: selectedCategory === cat.label ? '#ff0000' : '#303030',
-                },
-                '& .MuiChip-icon': {
-                  color: 'white'
-                }
-              }}
-            />
-          ))}
-        </Box>
-      </Box>
-
       {/* Video Grid */}
       <Grid 
         container 
         spacing={{ xs: 1, sm: 2 }} 
         sx={{ 
           mx: 0, 
-          width: '100%',
-          marginLeft: 0,
-          marginRight: 0
+          width: 'calc(100% + 16px)',
+          marginLeft: '-8px',
+          marginRight: '-8px',
+          mt: 2
         }}
       >
         {loading ? (
           [...Array(8)].map((_, i) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={i} sx={{ paddingLeft: '8px !important', paddingRight: '8px !important' }}>
+            <Grid item xs={12} sm={6} md={4} lg={3} key={i} sx={{ pl: '8px', pr: '8px' }}>
               <Skeleton variant="rectangular" height={180} sx={{ bgcolor: '#1a1a1a', borderRadius: 2 }} />
               <Box sx={{ pt: 2, display: 'flex', gap: 2 }}>
                 <Skeleton variant="circular" width={40} height={40} sx={{ bgcolor: '#1a1a1a' }} />
@@ -275,8 +236,8 @@ const Browse = ({ searchQuery }) => {
               lg={3} 
               key={video.id}
               sx={{ 
-                paddingLeft: '8px !important', 
-                paddingRight: '8px !important',
+                pl: '8px', 
+                pr: '8px',
                 width: '100%'
               }}
             >
@@ -500,7 +461,8 @@ const Browse = ({ searchQuery }) => {
               mx: 'auto', 
               p: { xs: 1, sm: 2, md: 3 },
               cursor: 'default',
-              overflow: 'hidden'
+              overflow: 'hidden',
+              boxSizing: 'border-box'
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -554,6 +516,8 @@ const Browse = ({ searchQuery }) => {
               maxHeight: '35vh',
               overflowY: 'auto',
               pr: 1,
+              width: '100%',
+              boxSizing: 'border-box',
               '&::-webkit-scrollbar': {
                 width: '6px',
               },
@@ -586,7 +550,8 @@ const Browse = ({ searchQuery }) => {
                     sx={{
                       color: liked[currentVideo.id] ? '#ff0000' : '#aaa',
                       '&:hover': { color: '#ff0000' },
-                      fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                      minWidth: 'auto'
                     }}
                   >
                     {formatViews(currentVideo.likes)}
@@ -597,12 +562,20 @@ const Browse = ({ searchQuery }) => {
                     sx={{
                       color: disliked[currentVideo.id] ? '#ff0000' : '#aaa',
                       '&:hover': { color: '#ff0000' },
-                      fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                      minWidth: 'auto'
                     }}
                   >
                     {formatViews(currentVideo.dislikes)}
                   </Button>
-                  <Button startIcon={<Share />} sx={{ color: '#aaa', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                  <Button 
+                    startIcon={<Share />} 
+                    sx={{ 
+                      color: '#aaa', 
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                      minWidth: 'auto'
+                    }}
+                  >
                     Share
                   </Button>
                 </Box>
