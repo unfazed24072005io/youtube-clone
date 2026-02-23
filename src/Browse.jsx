@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Grid,
   Box,
@@ -39,7 +39,7 @@ const Browse = ({ searchQuery }) => {
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState('');
 
-  const fetchVideos = async () => {
+  const fetchVideos = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get('https://xenzys-api.sutirthasoor7.workers.dev/api/videos?type=video');
@@ -58,11 +58,11 @@ const Browse = ({ searchQuery }) => {
       toast.error('Failed to load videos');
       setLoading(false);
     }
-  };
+  }, [searchQuery]);
 
   useEffect(() => {
     fetchVideos();
-  }, [searchQuery]); // Removed fetchVideos from dependencies to fix the warning
+  }, [fetchVideos]);
 
   const handleMenuClick = (event, video) => {
     event.stopPropagation();
