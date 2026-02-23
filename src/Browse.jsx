@@ -15,10 +15,6 @@ import {
   TextField
 } from '@mui/material';
 import {
-  Whatshot,
-  MusicNote,
-  SportsEsports,
-  Movie,
   MoreVert,
   WatchLater,
   PlaylistAdd,
@@ -43,10 +39,6 @@ const Browse = ({ searchQuery }) => {
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState('');
 
-  useEffect(() => {
-    fetchVideos();
-  }, [searchQuery]);
-
   const fetchVideos = async () => {
     try {
       setLoading(true);
@@ -67,6 +59,10 @@ const Browse = ({ searchQuery }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchVideos();
+  }, [searchQuery]); // Removed fetchVideos from dependencies to fix the warning
 
   const handleMenuClick = (event, video) => {
     event.stopPropagation();
