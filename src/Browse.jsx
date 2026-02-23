@@ -474,7 +474,7 @@ const Browse = ({ searchQuery }) => {
         </MenuItem>
       </Menu>
 
-      {/* Video Player Modal */}
+      {/* Video Player Modal - Fixed Overflow */}
       {playerOpen && currentVideo && (
         <Box
           sx={{
@@ -485,35 +485,53 @@ const Browse = ({ searchQuery }) => {
             bottom: 0,
             bgcolor: 'rgba(0,0,0,0.95)',
             zIndex: 2000,
-            overflowY: 'auto',
-            cursor: 'pointer'
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
           onClick={() => setPlayerOpen(false)}
         >
           <Box 
-            sx={{ maxWidth: 1200, mx: 'auto', p: 3, cursor: 'default' }}
+            sx={{ 
+              width: '100%',
+              maxWidth: 1200,
+              maxHeight: '90vh',
+              mx: 'auto', 
+              p: { xs: 1, sm: 2, md: 3 },
+              cursor: 'default',
+              overflow: 'hidden'
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}
             <IconButton
               onClick={() => setPlayerOpen(false)}
               sx={{ 
-                position: 'fixed', 
-                top: 16, 
-                right: 16, 
+                position: 'absolute', 
+                top: { xs: 8, sm: 16 }, 
+                right: { xs: 8, sm: 16 }, 
                 zIndex: 2100,
                 bgcolor: '#ff0000',
                 color: 'white',
                 '&:hover': { bgcolor: '#cc0000' },
-                width: 48,
-                height: 48
+                width: { xs: 36, sm: 48 },
+                height: { xs: 36, sm: 48 }
               }}
             >
               ✕
             </IconButton>
 
             {/* Video Player */}
-            <Box sx={{ position: 'relative', pt: '56.25%', bgcolor: '#000', borderRadius: 2, overflow: 'hidden' }}>
+            <Box sx={{ 
+              position: 'relative', 
+              width: '100%',
+              height: 0,
+              pb: '56.25%',
+              bgcolor: '#000', 
+              borderRadius: 2, 
+              overflow: 'hidden' 
+            }}>
               <video
                 src={`https://b2-proxy.sutirthasoor7.workers.dev/${currentVideo.filename}`}
                 controls
@@ -529,12 +547,34 @@ const Browse = ({ searchQuery }) => {
               />
             </Box>
 
-            {/* Video Info */}
-            <Box sx={{ mt: 3, color: 'white' }}>
-              <Typography variant="h5" sx={{ mb: 2 }}>{currentVideo.title}</Typography>
+            {/* Video Info - Scrollable */}
+            <Box sx={{ 
+              mt: { xs: 1, sm: 2, md: 3 }, 
+              color: 'white',
+              maxHeight: '35vh',
+              overflowY: 'auto',
+              pr: 1,
+              '&::-webkit-scrollbar': {
+                width: '6px',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                bgcolor: '#ff0000',
+                borderRadius: '10px',
+              }
+            }}>
+              <Typography variant="h5" sx={{ mb: 2, fontSize: { xs: '1.2rem', sm: '1.5rem' } }}>{currentVideo.title}</Typography>
               
               {/* Stats and Actions */}
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, pb: 2, borderBottom: '1px solid #333' }}>
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: { xs: 'column', sm: 'row' },
+                justifyContent: 'space-between', 
+                alignItems: { xs: 'flex-start', sm: 'center' }, 
+                mb: 2, 
+                pb: 2, 
+                borderBottom: '1px solid #333',
+                gap: { xs: 1, sm: 0 }
+              }}>
                 <Typography variant="body2" sx={{ color: '#aaa' }}>
                   {formatViews(currentVideo.views)} views • {formatTime(currentVideo.uploadedAt)}
                 </Typography>
@@ -545,7 +585,8 @@ const Browse = ({ searchQuery }) => {
                     onClick={handleLikeVideo}
                     sx={{
                       color: liked[currentVideo.id] ? '#ff0000' : '#aaa',
-                      '&:hover': { color: '#ff0000' }
+                      '&:hover': { color: '#ff0000' },
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' }
                     }}
                   >
                     {formatViews(currentVideo.likes)}
@@ -555,12 +596,13 @@ const Browse = ({ searchQuery }) => {
                     onClick={handleDislikeVideo}
                     sx={{
                       color: disliked[currentVideo.id] ? '#ff0000' : '#aaa',
-                      '&:hover': { color: '#ff0000' }
+                      '&:hover': { color: '#ff0000' },
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' }
                     }}
                   >
                     {formatViews(currentVideo.dislikes)}
                   </Button>
-                  <Button startIcon={<Share />} sx={{ color: '#aaa' }}>
+                  <Button startIcon={<Share />} sx={{ color: '#aaa', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
                     Share
                   </Button>
                 </Box>
@@ -568,19 +610,21 @@ const Browse = ({ searchQuery }) => {
 
               {/* Channel Info */}
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                <Avatar sx={{ bgcolor: '#ff0000', width: 48, height: 48 }}>
+                <Avatar sx={{ bgcolor: '#ff0000', width: { xs: 32, sm: 48 }, height: { xs: 32, sm: 48 } }}>
                   {currentVideo.channel?.charAt(0) || 'Y'}
                 </Avatar>
                 <Box>
-                  <Typography variant="subtitle1">{currentVideo.channel || 'Your Channel'}</Typography>
-                  <Typography variant="body2" sx={{ color: '#aaa' }}>1.2K subscribers</Typography>
+                  <Typography variant="subtitle1" sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}>{currentVideo.channel || 'Your Channel'}</Typography>
+                  <Typography variant="body2" sx={{ color: '#aaa', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>1.2K subscribers</Typography>
                 </Box>
                 <Button
                   variant="contained"
                   sx={{
                     ml: 'auto',
                     bgcolor: '#cc0000',
-                    '&:hover': { bgcolor: '#ff0000' }
+                    '&:hover': { bgcolor: '#ff0000' },
+                    fontSize: { xs: '0.7rem', sm: '0.875rem' },
+                    py: { xs: 0.5, sm: 1 }
                   }}
                 >
                   Subscribe
@@ -588,17 +632,22 @@ const Browse = ({ searchQuery }) => {
               </Box>
 
               {/* Description */}
-              <Typography variant="body1" sx={{ mb: 3, color: '#ddd', whiteSpace: 'pre-wrap' }}>
+              <Typography variant="body1" sx={{ 
+                mb: 3, 
+                color: '#ddd', 
+                whiteSpace: 'pre-wrap',
+                fontSize: { xs: '0.85rem', sm: '1rem' }
+              }}>
                 {currentVideo.description || 'No description'}
               </Typography>
 
               {/* Comments Section */}
               <Box>
-                <Typography variant="h6" sx={{ mb: 2 }}>Comments ({comments.length})</Typography>
+                <Typography variant="h6" sx={{ mb: 2, fontSize: { xs: '1rem', sm: '1.25rem' } }}>Comments ({comments.length})</Typography>
                 
                 {/* Add Comment */}
-                <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-                  <Avatar sx={{ bgcolor: '#333' }}>Y</Avatar>
+                <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: { xs: 'wrap', sm: 'nowrap' } }}>
+                  <Avatar sx={{ bgcolor: '#333', width: { xs: 32, sm: 40 }, height: { xs: 32, sm: 40 } }}>Y</Avatar>
                   <TextField
                     fullWidth
                     size="small"
@@ -616,7 +665,11 @@ const Browse = ({ searchQuery }) => {
                   <Button
                     variant="contained"
                     onClick={handleAddComment}
-                    sx={{ bgcolor: '#ff0000', '&:hover': { bgcolor: '#cc0000' } }}
+                    sx={{ 
+                      bgcolor: '#ff0000', 
+                      '&:hover': { bgcolor: '#cc0000' },
+                      width: { xs: '100%', sm: 'auto' }
+                    }}
                   >
                     Comment
                   </Button>
@@ -629,7 +682,7 @@ const Browse = ({ searchQuery }) => {
                       {comment.username?.charAt(0) || 'U'}
                     </Avatar>
                     <Box>
-                      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
                         <Typography variant="subtitle2">{comment.username}</Typography>
                         <Typography variant="caption" sx={{ color: '#aaa' }}>
                           {new Date(comment.timestamp).toLocaleDateString()}
