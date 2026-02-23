@@ -25,7 +25,8 @@ import {
   PlaylistAdd,
   Share,
   ThumbUp,
-  ThumbDown
+  ThumbDown,
+  PlayArrow
 } from '@mui/icons-material';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -54,7 +55,7 @@ const Browse = ({ searchQuery }) => {
 
   useEffect(() => {
     fetchVideos();
-// eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory, searchQuery]);
 
   const fetchVideos = async () => {
@@ -189,42 +190,57 @@ const Browse = ({ searchQuery }) => {
   };
 
   return (
-    <Box>
-      {/* Categories */}
+    <Box sx={{ 
+      width: '100%',
+      maxWidth: '100vw',
+      overflowX: 'hidden',
+      px: { xs: 1, sm: 2, md: 3 }
+    }}>
+      {/* Categories - Scrollable but full width */}
       <Box sx={{ 
-        display: 'flex', 
-        gap: 1, 
-        mb: 3, 
+        width: '100%',
         overflowX: 'auto',
         pb: 1,
-        '&::-webkit-scrollbar': { height: 4 },
+        mb: 2,
+        '&::-webkit-scrollbar': { height: 3 },
         '&::-webkit-scrollbar-thumb': { bgcolor: '#ff0000', borderRadius: 2 }
       }}>
-        {categories.map((cat) => (
-          <Chip
-            key={cat.label}
-            label={cat.label}
-            icon={cat.icon}
-            onClick={() => setSelectedCategory(cat.label)}
-            sx={{
-              bgcolor: selectedCategory === cat.label ? '#ff0000' : '#1a1a1a',
-              color: 'white',
-              '&:hover': {
-                bgcolor: selectedCategory === cat.label ? '#ff0000' : '#303030',
-              },
-              '& .MuiChip-icon': {
-                color: 'white'
-              }
-            }}
-          />
-        ))}
+        <Box sx={{ display: 'flex', gap: 1, width: 'max-content' }}>
+          {categories.map((cat) => (
+            <Chip
+              key={cat.label}
+              label={cat.label}
+              icon={cat.icon}
+              onClick={() => setSelectedCategory(cat.label)}
+              sx={{
+                bgcolor: selectedCategory === cat.label ? '#ff0000' : '#1a1a1a',
+                color: 'white',
+                '&:hover': {
+                  bgcolor: selectedCategory === cat.label ? '#ff0000' : '#303030',
+                },
+                '& .MuiChip-icon': {
+                  color: 'white'
+                }
+              }}
+            />
+          ))}
+        </Box>
       </Box>
 
       {/* Video Grid */}
-      <Grid container spacing={2}>
+      <Grid 
+        container 
+        spacing={{ xs: 1, sm: 2 }} 
+        sx={{ 
+          mx: 0, 
+          width: '100%',
+          marginLeft: 0,
+          marginRight: 0
+        }}
+      >
         {loading ? (
           [...Array(8)].map((_, i) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
+            <Grid item xs={12} sm={6} md={4} lg={3} key={i} sx={{ paddingLeft: '8px !important', paddingRight: '8px !important' }}>
               <Skeleton variant="rectangular" height={180} sx={{ bgcolor: '#1a1a1a', borderRadius: 2 }} />
               <Box sx={{ pt: 2, display: 'flex', gap: 2 }}>
                 <Skeleton variant="circular" width={40} height={40} sx={{ bgcolor: '#1a1a1a' }} />
@@ -252,37 +268,70 @@ const Browse = ({ searchQuery }) => {
           </Grid>
         ) : (
           videos.map((video) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={video.id}>
+            <Grid 
+              item 
+              xs={12} 
+              sm={6} 
+              md={4} 
+              lg={3} 
+              key={video.id}
+              sx={{ 
+                paddingLeft: '8px !important', 
+                paddingRight: '8px !important',
+                width: '100%'
+              }}
+            >
               <Card 
                 sx={{ 
                   bgcolor: 'transparent', 
                   boxShadow: 'none',
                   cursor: 'pointer',
                   transition: 'transform 0.2s',
+                  width: '100%',
                   '&:hover': {
                     transform: 'translateY(-5px)',
                     '& .video-actions': {
                       opacity: 1
+                    },
+                    '& .play-button': {
+                      transform: 'scale(1.1)'
                     }
                   }
                 }}
                 onClick={() => handleVideoClick(video)}
               >
-                <Box sx={{ position: 'relative' }}>
-                  <CardMedia
-                    component="img"
-                    image={
-                      video.thumbnail 
-                        ? video.thumbnail.replace('http://localhost:5000', 'https://b2-proxy.sutirthasoor7.workers.dev')
-                        : `https://via.placeholder.com/320x180/ff0000/ffffff?text=${video.title?.substring(0,10) || 'Video'}`
-                    }
-                    alt={video.title}
+                <Box sx={{ position: 'relative', height: 180, bgcolor: '#000', borderRadius: 2, overflow: 'hidden' }}>
+                  {/* Black background with red play button circle */}
+                  <Box
                     sx={{
-                      height: 180,
-                      borderRadius: 2,
-                      objectFit: 'cover'
+                      width: '100%',
+                      height: '100%',
+                      bgcolor: '#000',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
                     }}
-                  />
+                  >
+                    {/* Red Circle with Play Icon */}
+                    <Box
+                      className="play-button"
+                      sx={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: '50%',
+                        bgcolor: '#ff0000',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'transform 0.2s',
+                        boxShadow: '0 4px 10px rgba(255,0,0,0.3)'
+                      }}
+                    >
+                      <PlayArrow sx={{ fontSize: 40, color: 'white' }} />
+                    </Box>
+                  </Box>
+                  
+                  {/* Actions Menu Button */}
                   <Box
                     className="video-actions"
                     sx={{
@@ -290,7 +339,8 @@ const Browse = ({ searchQuery }) => {
                       top: 8,
                       right: 8,
                       opacity: 0,
-                      transition: 'opacity 0.2s'
+                      transition: 'opacity 0.2s',
+                      zIndex: 10
                     }}
                   >
                     <IconButton 
@@ -301,8 +351,10 @@ const Browse = ({ searchQuery }) => {
                       <MoreVert fontSize="small" />
                     </IconButton>
                   </Box>
+                  
+                  {/* Duration Chip */}
                   <Chip
-                    label={video.duration || '10:30'}
+                    label={video.duration || '0:00'}
                     size="small"
                     sx={{
                       position: 'absolute',
@@ -310,7 +362,8 @@ const Browse = ({ searchQuery }) => {
                       right: 8,
                       bgcolor: 'rgba(0,0,0,0.8)',
                       color: 'white',
-                      fontSize: '12px'
+                      fontSize: '12px',
+                      zIndex: 10
                     }}
                   />
                 </Box>
@@ -326,14 +379,19 @@ const Browse = ({ searchQuery }) => {
                     >
                       {video.channel?.charAt(0) || 'Y'}
                     </Avatar>
-                    <Box sx={{ flex: 1 }}>
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
                       <Typography 
                         variant="subtitle1" 
                         sx={{ 
                           color: 'white', 
                           fontWeight: 500,
                           lineHeight: 1.2,
-                          mb: 0.5
+                          mb: 0.5,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical'
                         }}
                       >
                         {video.title || 'Untitled'}
@@ -341,7 +399,7 @@ const Browse = ({ searchQuery }) => {
                       <Typography variant="body2" sx={{ color: '#909090' }}>
                         {video.channel || 'Your Channel'}
                       </Typography>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5, flexWrap: 'wrap' }}>
                         <Typography variant="body2" sx={{ color: '#909090' }}>
                           {formatViews(video.views)} views
                         </Typography>
@@ -428,14 +486,29 @@ const Browse = ({ searchQuery }) => {
             bottom: 0,
             bgcolor: 'rgba(0,0,0,0.95)',
             zIndex: 2000,
-            overflowY: 'auto'
+            overflowY: 'auto',
+            cursor: 'pointer'
           }}
+          onClick={() => setPlayerOpen(false)}
         >
-          <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
+          <Box 
+            sx={{ maxWidth: 1200, mx: 'auto', p: 3, cursor: 'default' }}
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Close button */}
             <IconButton
               onClick={() => setPlayerOpen(false)}
-              sx={{ position: 'fixed', top: 20, right: 20, color: 'white', bgcolor: '#1a1a1a', '&:hover': { bgcolor: '#ff0000' } }}
+              sx={{ 
+                position: 'fixed', 
+                top: 16, 
+                right: 16, 
+                zIndex: 2100,
+                bgcolor: '#ff0000',
+                color: 'white',
+                '&:hover': { bgcolor: '#cc0000' },
+                width: 48,
+                height: 48
+              }}
             >
               ✕
             </IconButton>
